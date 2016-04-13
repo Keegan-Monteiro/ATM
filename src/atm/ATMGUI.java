@@ -1,19 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package atm;
 
-/**
- *
- * @author keegan59
- */
 public class ATMGUI extends java.awt.Frame {
-
-    /**
-     * Creates new form ATMGUI
-     */
+    DBConnection con = new DBConnection();
+    
     public ATMGUI() {
         initComponents();
         this.setResizable(false);
@@ -35,6 +24,7 @@ public class ATMGUI extends java.awt.Frame {
         label2 = new java.awt.Label();
         textField2 = new java.awt.TextField();
 
+        setTitle("Login");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 exitForm(evt);
@@ -42,8 +32,18 @@ public class ATMGUI extends java.awt.Frame {
         });
 
         button1.setLabel("Login");
+        button1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button1ActionPerformed(evt);
+            }
+        });
 
         button2.setLabel("Create New Account");
+        button2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button2ActionPerformed(evt);
+            }
+        });
 
         label1.setText("Account Number:");
 
@@ -83,7 +83,7 @@ public class ATMGUI extends java.awt.Frame {
                 .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(panel1, java.awt.BorderLayout.CENTER);
@@ -97,6 +97,16 @@ public class ATMGUI extends java.awt.Frame {
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         System.exit(0);
     }//GEN-LAST:event_exitForm
+
+    private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
+        RegisterAccountUI newAccount = new RegisterAccountUI();
+        newAccount.setVisible(true);
+    }//GEN-LAST:event_button2ActionPerformed
+
+    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
+       User session = new User();
+       session.login(Integer.parseInt(textField1.getText()), Integer.parseInt(textField2.getText()));
+    }//GEN-LAST:event_button1ActionPerformed
 
     /**
      * @param args the command line arguments
