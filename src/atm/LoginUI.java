@@ -1,11 +1,16 @@
 package atm;
 
-public class ATMGUI extends java.awt.Frame {
+import javax.swing.JOptionPane;
+
+public class LoginUI extends java.awt.Frame {
     DBConnection con = new DBConnection();
+    private boolean isLoggedIn = false;
+    private static User userSession;
     
-    public ATMGUI() {
+    public LoginUI() {
         initComponents();
         this.setResizable(false);
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -24,6 +29,7 @@ public class ATMGUI extends java.awt.Frame {
         label2 = new java.awt.Label();
         textField2 = new java.awt.TextField();
 
+        setLocationRelativeTo(null);
         setTitle("Login");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -48,6 +54,12 @@ public class ATMGUI extends java.awt.Frame {
         label1.setText("Account Number:");
 
         label2.setText("Pin Number:");
+
+        textField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                textField2KeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
@@ -95,26 +107,60 @@ public class ATMGUI extends java.awt.Frame {
      * Exit the Application
      */
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
-        System.exit(0);
+        if (isLoggedIn == true)
+            this.dispose();
+        else            
+            System.exit(0);
     }//GEN-LAST:event_exitForm
 
     private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
-        RegisterAccountUI newAccount = new RegisterAccountUI();
+        CreateUserAccountUI newAccount = new CreateUserAccountUI();
         newAccount.setVisible(true);
     }//GEN-LAST:event_button2ActionPerformed
 
     private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
-       User session = new User();
-       session.login(Integer.parseInt(textField1.getText()), Integer.parseInt(textField2.getText()));
+        if (textField1.getText().length() < 4)
+            JOptionPane.showMessageDialog(this, "Account Number is too short");
+        else if (textField2.getText().length() < 4)
+            JOptionPane.showMessageDialog(this, "Pin Number is too short");
+        else 
+        {
+            try {
+                userSession = new User();
+            boolean correctDetails = userSession.login(Integer.parseInt(textField1.getText()), Integer.parseInt(textField2.getText()));
+            if (correctDetails == true)
+            {
+                ATMUI atm = new ATMUI();
+                atm.setVisible(true);
+                isLoggedIn = true;
+                this.dispose();
+            }
+            else
+                JOptionPane.showMessageDialog(this, "Incorrect Details");
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter numeric values");
+            }
+            
+        }
     }//GEN-LAST:event_button1ActionPerformed
 
+    private void textField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textField2KeyTyped
+        if(textField2.getText().length()>=4) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_textField2KeyTyped
+
+    public static User getUserSession() {
+        return userSession;
+    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ATMGUI().setVisible(true);
+                new LoginUI().setVisible(true);
             }
         });
     }

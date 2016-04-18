@@ -11,14 +11,15 @@ import javax.swing.JOptionPane;
  *
  * @author keegan59
  */
-public class RegisterAccountUI extends java.awt.Frame {
+public class CreateUserAccountUI extends java.awt.Frame {
 
     /**
      * Creates new form RegisterAccountUI
      */
-    public RegisterAccountUI() {
+    public CreateUserAccountUI() {
         initComponents();
         this.setResizable(false);
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -37,6 +38,7 @@ public class RegisterAccountUI extends java.awt.Frame {
         textField3 = new java.awt.TextField();
         button1 = new java.awt.Button();
 
+        setLocationRelativeTo(null);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 exitForm(evt);
@@ -146,7 +148,7 @@ public class RegisterAccountUI extends java.awt.Frame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RegisterAccountUI().setVisible(true);
+                new CreateUserAccountUI().setVisible(true);
             }
         });
     }

@@ -3,6 +3,8 @@ package atm;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private int accountNumber;
@@ -20,6 +22,7 @@ public class User {
                 this.pin = pin;
                 this.name = name;
             }
+            rs.close();
         } catch (SQLException ex) {
             //System.out.println(ex.toString());
         }
@@ -41,18 +44,39 @@ public class User {
         return name;
     }
     
-    public void login(int accountNumber, int pin) {
-        String sql = "SELECT * FROM users WHERE users.AccountNumber = " + accountNumber + " AND users.PinNuMBER = " + pin + " LIMIT 1";
+    public boolean login(int accountNumber, int pin) {
+        String sql = "SELECT * FROM users WHERE users.AccountNumber = " + accountNumber + " AND users.PinNumber = " + pin + " LIMIT 1";
         ResultSet rs = DBConnection.SelectQuery(sql);
         try {
             if (rs.next()) {
                 this.accountNumber = accountNumber;
                 this.pin = pin;
                 this.name = rs.getString("Name");
-                System.out.println("Login Accepted");
+                return true;
             }
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+            return false;
+        }
+        return false;
+    }
+    
+    public List<Account> getUserAccounts(User user){
+        List<Account> userAccounts = new ArrayList<Account>();
+        String sql = "SELECT a.AccountID, a.AccountTypeID, a.AccountNumber, a.AccountBalance FROM account a WHERE a.AccountNumber = " + user.getAccountNumber();
+        ResultSet rs = DBConnection.SelectQuery(sql);
+        try {
+            while(rs.next()) {
+                if (rs.getInt("AccountTypeID") == 1)
+                    userAccounts.add(new CurrentAccount(rs.getInt("AccountID"),rs.getInt("AccountTypeID"),rs.getDouble("AccountBalance"),user));
+                else if (rs.getInt("AccountTypeID") == 2)
+                    userAccounts.add(new SavingsAccount(rs.getInt("AccountID"),rs.getInt("AccountTypeID"),rs.getDouble("AccountBalance"),user));
+            }
+            rs.close();
         } catch (SQLException ex) {
             System.out.println(ex.toString());
         }
+        return userAccounts;
     }
 }

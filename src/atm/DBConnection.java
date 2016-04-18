@@ -63,18 +63,22 @@ public class DBConnection {
         return rs;
     }
     
-    public static String SQLQuery(String sql) {
+    public static int SQLQuery(String sql) {
+        int success = 0;
         try {
             if (isClosed()) {
                 if (connect()) {
-                    stmt.executeUpdate(sql);
+                    success = stmt.executeUpdate(sql);
                 }
             }
             else
-                stmt.executeUpdate(sql);
-            return ("SQL successfully excueted");
+                success = stmt.executeUpdate(sql);
+            if (success != 0)
+                return (success);
         } catch (SQLException ex) {
-            return ex.toString();  
+            success = 0;
+            return success;  
         }
+        return success;
     }
 }
